@@ -12,15 +12,25 @@ view: users {
     sql: ${TABLE}."AGE" ;;
   }
 
+  dimension: age_tier {
+    type: tier
+    tiers: [10,20,30,40,50,60,70,80]
+    style: integer
+    sql: ${age} ;;
+  }
+
   dimension: city {
     type: string
     sql: ${TABLE}."CITY" ;;
+    drill_fields: [zip]
+    map_layer_name: us_zipcode_tabulation_areas
   }
 
   dimension: country {
     type: string
     map_layer_name: countries
     sql: ${TABLE}."COUNTRY" ;;
+    drill_fields: [state, city, zip]
   }
 
   dimension_group: created {
@@ -67,9 +77,17 @@ view: users {
     sql: ${TABLE}."LONGITUDE" ;;
   }
 
+  dimension: location {
+    type: location
+    sql_latitude: ${latitude} ;;
+    sql_longitude: ${longitude} ;;
+  }
+
   dimension: state {
     type: string
     sql: ${TABLE}."STATE" ;;
+    drill_fields: [city, zip]
+    map_layer_name: us_states
   }
 
   dimension: traffic_source {
@@ -80,6 +98,13 @@ view: users {
   dimension: zip {
     type: zipcode
     sql: ${TABLE}."ZIP" ;;
+    map_layer_name: us_zipcode_tabulation_areas
+  }
+
+  dimension: uk_postcodes {
+    type: string
+    sql: ${TABLE}.zip ;;
+    map_layer_name: uk_postcode_areas
   }
 
   measure: count {

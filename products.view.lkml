@@ -6,6 +6,10 @@ view: products {
     type: number
     sql: ${TABLE}."ID" ;;
   }
+  dimension: id_2 {
+    type: string
+    sql: ${TABLE}."ID" ;;
+  }
 
   dimension: brand {
     type: string
@@ -43,6 +47,13 @@ view: products {
     sql: ${TABLE}."RETAIL_PRICE" ;;
   }
 
+  dimension: price_tier {
+    type: tier
+    tiers: [25,50,100,500,1000]
+    sql: ${retail_price} ;;
+    style: integer
+  }
+
   dimension: sku {
     type: string
     sql: ${TABLE}."SKU" ;;
@@ -51,5 +62,15 @@ view: products {
   measure: count {
     type: count
     drill_fields: [id, name, distribution_centers.id, distribution_centers.name, inventory_items.count]
+  }
+
+  measure: count_of_product_by_distribution_center {
+    type: count_distinct
+    sql: ${id} ;;
+  }
+
+  measure: count_of_product_by_distribution_center_1 {
+    type: count_distinct
+    sql: ${id_2} ;;
   }
 }

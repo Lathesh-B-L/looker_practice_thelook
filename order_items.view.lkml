@@ -13,6 +13,8 @@ view: order_items {
       raw,
       time,
       date,
+      day_of_week,
+      day_of_month,
       week,
       month,
       quarter,
@@ -65,6 +67,11 @@ view: order_items {
     sql: ${TABLE}."SALE_PRICE" ;;
   }
 
+  dimension: gross_margin {
+    type: number
+    sql: ${sale_price} - ${inventory_items.cost} ;;
+  }
+
   dimension_group: shipped {
     type: time
     timeframes: [
@@ -79,6 +86,11 @@ view: order_items {
     sql: ${TABLE}."SHIPPED_AT" ;;
   }
 
+  dimension: is_returened {
+    type: yesno
+    sql: ${TABLE}."RETURNED_AT" is NOT NULL;;
+  }
+
   dimension: status {
     type: string
     sql: ${TABLE}."STATUS" ;;
@@ -91,8 +103,57 @@ view: order_items {
   }
 
   measure: count {
-    type: count
+     type: count
+     drill_fields: [detail*]
+   }
+
+
+  measure:total_sale_price  {
+    type: sum
+    sql: ${TABLE}.sale_price ;;
     drill_fields: [detail*]
+    value_format_name: usd_0
+  }
+
+  measure: total_returend_price  {
+    type: sum
+    sql: ${sale_price};;
+    drill_fields: [detail*]
+    value_format_name: usd_0
+    filters: {field: is_returened
+              value: "YES"}
+  }
+
+  measure: prev_month_sale {
+    type:  sum
+    sql: ${sale_price} ;;
+    drill_fields: [detail*]
+    value_format_name: usd_0
+    filters: {field: created_month
+              value: "last month"}
+  }
+
+  measure: curr_month_sale {
+    type: sum
+    sql: ${sale_price} ;;
+    drill_fields: [detail*]
+    value_format_name: usd_0
+    filters: {field: created_date
+              value: "this month"}
+  }
+
+  measure:  total_gross_margin {
+    type: sum
+    sql: ${gross_margin} ;;
+    drill_fields: [detail*]
+    value_format_name: usd_0
+  }
+
+  measure: average_gross_margin {
+    type: average
+    sql: ${gross_margin} ;;
+    drill_fields: [detail*]
+    value_format_name: usd_0
   }
 
   # ----- Sets of fields for drilling ------

@@ -26,4 +26,10 @@ view: distribution_centers {
     type: count
     drill_fields: [id, name, products.count]
   }
+
+  dimension: latitude_and_longitude {
+    type: location
+    sql_latitude: ${latitude};;
+    sql_longitude: ${longitude};;
+  }
 }

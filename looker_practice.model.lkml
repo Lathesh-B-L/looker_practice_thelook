@@ -4,14 +4,8 @@ connection: "thelook"
 include: "*.view"
 
 # include all the dashboards
-include: "*.dashboard"
+# include: "*.dashboard"
 
-datagroup: looker_practice_default_datagroup {
-  # sql_trigger: SELECT MAX(id) FROM etl_log;;
-  max_cache_age: "1 hour"
-}
-
-persist_with: looker_practice_default_datagroup
 
 explore: distribution_centers {}
 
@@ -62,6 +56,20 @@ explore: order_items {
     type: left_outer
     sql_on: ${products.distribution_center_id} = ${distribution_centers.id} ;;
     relationship: many_to_one
+  }
+
+  join: user_order_fact {
+    view_label: "Users"
+    type: left_outer
+    sql_on: ${user_order_fact.user_id} = ${order_items.user_id} ;;
+    relationship: one_to_many
+  }
+
+  join: user_order_fact_sql {
+    view_label: "Users_new"
+    type: left_outer
+    sql_on: ${user_order_fact.user_id} = ${order_items.user_id} ;;
+    relationship: one_to_many
   }
 }
 
