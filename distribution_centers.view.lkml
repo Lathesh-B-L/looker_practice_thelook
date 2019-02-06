@@ -26,4 +26,9 @@ view: distribution_centers {
     type: count
     drill_fields: [id, name, products.count]
   }
+  measure: is_large_count  {
+    type: yesno
+    sql: ${count}>0 ;;
+
+  }
 }
