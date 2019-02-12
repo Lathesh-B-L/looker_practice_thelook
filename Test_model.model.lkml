@@ -15,4 +15,10 @@ include: "*.view.lkml"                       # include all views in this project
     relationship: one_to_many
     sql_on: ${order_items.id}=${distribution_centers.id} ;;
   }
+  # added to test sequence
+  join: events {
+    type: left_outer
+    sql_on: ${order_items.id}=${events.id} ;;
+    relationship: one_to_many
+  }
  }
